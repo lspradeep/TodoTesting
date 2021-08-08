@@ -43,7 +43,7 @@ android {
 dependencies {
 
     implementation 'androidx.core:core-ktx:1.6.0'
-    implementation 'androidx.appcompat:appcompat:1.4.0-alpha03'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
     testImplementation 'junit:junit:4.13.2'
@@ -61,9 +61,13 @@ dependencies {
     implementation "androidx.compose.ui:ui-tooling:$compose_version"
     // Integration with ViewModels
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07'
+    // Integration with observables
+    implementation 'androidx.compose.runtime:runtime-livedata:1.0.1'
     // When using a MDC theme
     implementation "com.google.android.material:compose-theme-adapter:$compose_version"
-//    implementation "com.google.accompanist:accompanist-appcompat-theme:0.16.0"
+
+    implementation "androidx.compose.material:material-icons-core:$compose_version"
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
 
 
     //room
@@ -73,6 +77,7 @@ dependencies {
     //hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
+    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0-alpha03'
 }
 
 kapt {
