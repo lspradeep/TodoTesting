@@ -20,4 +20,14 @@ class AddTodoViewModel @Inject constructor() : ViewModel() {
     }
 
 
+    private val _detail = MutableLiveData("")
+    val detail: LiveData<String> = _detail
+
+    // onNameChange is an event we're defining that the UI can invoke
+    // (events flow up from UI)
+    fun onContentChange(newName: String) {
+        _detail.value = newName
+    }
+
+
 }
