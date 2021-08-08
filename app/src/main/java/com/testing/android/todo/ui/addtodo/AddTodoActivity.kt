@@ -90,6 +90,12 @@ class AddTodoActivity : AppCompatActivity() {
                                 )
 
                                 Spacer(modifier = modifier.height(16.dp))
+
+                                Button(onClick = {
+                                    addTodoViewModel.addTodo()
+                                }) {
+
+                                }
                             }
                         }
                     }

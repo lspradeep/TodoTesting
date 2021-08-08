@@ -29,5 +29,10 @@ class AddTodoViewModel @Inject constructor() : ViewModel() {
         _detail.value = newName
     }
 
+    fun addTodo() {
+
+
+    }
+
 
 }
