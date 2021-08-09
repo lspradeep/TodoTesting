@@ -1,6 +1,7 @@
 package com.testing.android.todo.ui.addtodo
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
@@ -23,7 +24,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.testing.android.todo.grey
 import com.testing.android.todo.greyLight
+import com.testing.android.todo.ui.Resource
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class AddTodoActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,6 +37,12 @@ class AddTodoActivity : AppCompatActivity() {
             val addTodoViewModel: AddTodoViewModel = viewModel()
             val title = addTodoViewModel.title.observeAsState()
             val detail = addTodoViewModel.detail.observeAsState()
+            val addTodoStatus = addTodoViewModel.addTodoStatus.observeAsState()
+            if (addTodoStatus.value?.status == Resource.Status.SUCCESS) {
+                finish()
+            } else if (addTodoStatus.value?.status == Resource.Status.ERROR) {
+                Toast.makeText(this, addTodoStatus.value?.message, Toast.LENGTH_SHORT).show()
+            }
 
             val modifier = Modifier
             MaterialTheme {
@@ -93,8 +104,8 @@ class AddTodoActivity : AppCompatActivity() {
 
                                 Button(onClick = {
                                     addTodoViewModel.addTodo()
-                                }) {
-
+                                }, modifier = modifier.fillMaxWidth()) {
+                                    Text(text = "Create Todo")
                                 }
                             }
                         }

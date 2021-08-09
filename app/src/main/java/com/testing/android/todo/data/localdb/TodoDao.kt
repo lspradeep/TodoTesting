@@ -1,16 +1,24 @@
 package com.testing.android.todo.data.localdb
 
-import androidx.room.Dao
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
 interface TodoDao {
     @Query("SELECT * FROM todo_table")
-    fun getAllTodos(): List<Todo>
+    suspend fun getAllTodos(): List<Todo>
 
     @Query("SELECT * FROM todo_table WHERE completed")
-    fun getCompletedTodos(): List<Todo>
+    suspend fun getCompletedTodos(): List<Todo>
 
     @Query("SELECT * FROM todo_table WHERE NOT completed")
-    fun getIncompleteTodos(): List<Todo>
+    suspend fun getIncompleteTodos(): List<Todo>
+
+    @Insert
+    suspend fun addTodo(todo: Todo)
+
+    @Update()
+    suspend fun updateTodo(todo: Todo)
+
+    @Delete
+    suspend fun deleteTodo(todo: Todo)
 }

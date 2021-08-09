@@ -1,20 +1,25 @@
 package com.testing.android.todo.ui.addtodo
 
+import androidx.compose.ui.semantics.SemanticsProperties.Error
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.testing.android.todo.data.localdb.Todo
+import com.testing.android.todo.data.localdb.TodoDao
+import com.testing.android.todo.repo.TodoRepo
+import com.testing.android.todo.ui.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
-class AddTodoViewModel @Inject constructor() : ViewModel() {
-    // LiveData holds state which is observed by the UI
-    // (state flows down from ViewModel)
+class AddTodoViewModel @Inject constructor(private val todoRepo: TodoRepo) : ViewModel() {
+
     private val _title = MutableLiveData("")
     val title: LiveData<String> = _title
 
-    // onNameChange is an event we're defining that the UI can invoke
-    // (events flow up from UI)
     fun onTitleChange(newName: String) {
         _title.value = newName
     }
@@ -23,15 +28,33 @@ class AddTodoViewModel @Inject constructor() : ViewModel() {
     private val _detail = MutableLiveData("")
     val detail: LiveData<String> = _detail
 
-    // onNameChange is an event we're defining that the UI can invoke
-    // (events flow up from UI)
     fun onContentChange(newName: String) {
         _detail.value = newName
     }
 
+    private val _addTodoStatus = MutableLiveData<Resource<String?>>()
+    val addTodoStatus: LiveData<Resource<String?>> = _addTodoStatus
+
     fun addTodo() {
-
-
+        if (title.value.isNullOrBlank()) {
+            _addTodoStatus.value = Resource.Error(null, "Please provide title")
+            return
+        }
+        if (detail.value.isNullOrBlank()) {
+            _addTodoStatus.value = Resource.Error(null, "Please provide content")
+            return
+        }
+        viewModelScope.launch {
+            try {
+                todoRepo.addTodo(Todo(title = title.value ?: "",
+                    content = detail.value ?: "",
+                    completed = false))
+                _addTodoStatus.value = Resource.Success(null, null)
+            } catch (e: Exception) {
+                println("Error $e")
+                _addTodoStatus.value = Resource.Error(null, "Something went wrong")
+            }
+        }
     }
 
 

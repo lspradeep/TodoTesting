@@ -21,12 +21,13 @@ class DatabaseModule {
         return Room.databaseBuilder(
             appContext,
             TodoDB::class.java,
-            "todo_db.db"
+            "todo_db"
         ).build()
     }
 
     @Provides
-    fun provideLogDao(database: TodoDB): TodoDao {
+    @Singleton
+    fun providesTodoDao(database: TodoDB): TodoDao {
         return database.todoDao()
     }
 }

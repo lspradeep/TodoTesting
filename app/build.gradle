@@ -72,7 +72,9 @@ dependencies {
 
     //room
     implementation "androidx.room:room-runtime:$room_version"
-    annotationProcessor "androidx.room:room-compiler:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    kapt "android.arch.persistence.room:compiler:1.1.1"
+    implementation "androidx.room:room-ktx:2.3.0"
 
     //hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
