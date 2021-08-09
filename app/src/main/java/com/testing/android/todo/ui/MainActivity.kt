@@ -6,6 +6,8 @@ import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
@@ -62,7 +64,9 @@ class MainActivity : AppCompatActivity() {
                     content = {
                         Box(modifier = modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center) {
-                            LazyColumn {
+                            LazyColumn(modifier = modifier
+                                .fillMaxWidth()
+                                .align(alignment = Alignment.TopStart)) {
                                 item {
                                     todos.value?.data?.forEach {
                                         val checked = remember {
@@ -73,6 +77,7 @@ class MainActivity : AppCompatActivity() {
                                             onClick = { check ->
                                                 mainViewModel.updateTodo(it.copy(completed = check))
                                             })
+                                        Divider()
                                     }
                                 }
                             }
@@ -104,12 +109,19 @@ class MainActivity : AppCompatActivity() {
         todo: Todo,
         onClick: (Boolean) -> Unit,
     ) {
-        Row(modifier = modifier.padding(4.dp)) {
-            Column {
+        Row(modifier = modifier
+            .padding(8.dp)
+            .fillMaxWidth()
+            .clickable {
+                mainViewModel.updateTodo(todo.copy(completed = !todo.completed))
+            },
+            verticalAlignment = Alignment.CenterVertically) {
+            Column(modifier = modifier.weight(1f)) {
                 Text(text = todo.title)
                 Spacer(modifier = modifier.height(4.dp))
                 Text(text = todo.content)
             }
+            Spacer(modifier = modifier.height(8.dp))
             Checkbox(checked = todo.completed, onCheckedChange = onClick)
         }
     }
