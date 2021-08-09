@@ -10,6 +10,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -47,10 +49,10 @@ class MainActivity : AppCompatActivity() {
         setContent {
             val todos = mainViewModel.todos.observeAsState()
             val update = mainViewModel.update.observeAsState()
-            if (update.value?.status == Resource.Status.SUCCESS) {
+            val rememberListState = rememberLazyListState()
+            if (update.value != null) {
                 getTodos()
-            } else if (update.value?.status == Resource.Status.ERROR) {
-                Toast.makeText(this, update.value?.message, Toast.LENGTH_SHORT).show()
+                mainViewModel.update.value = null
             }
             val modifier = Modifier
             MaterialTheme {
@@ -64,21 +66,22 @@ class MainActivity : AppCompatActivity() {
                     content = {
                         Box(modifier = modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center) {
-                            LazyColumn(modifier = modifier
-                                .fillMaxWidth()
-                                .align(alignment = Alignment.TopStart)) {
-                                item {
-                                    todos.value?.data?.forEach {
-                                        val checked = remember {
-                                            mutableStateOf(false)
-                                        }
-                                        TodoItem(modifier = modifier,
-                                            todo = it,
-                                            onClick = { check ->
-                                                mainViewModel.updateTodo(it.copy(completed = check))
-                                            })
-                                        Divider()
-                                    }
+                            LazyColumn(
+                                state = rememberListState,
+                                contentPadding = PaddingValues(bottom = 80.dp),
+                                modifier = modifier
+                                    .fillMaxWidth()
+                                    .align(alignment = Alignment.TopStart)) {
+                                items(todos.value?.data.orEmpty()) { todo ->
+                                    TodoItem(modifier = modifier,
+                                        todo = todo,
+//                                        checked = (mainViewModel.update.tryReceive()
+//                                            .getOrNull() ?: todo.completed),
+                                        onClick = { check ->
+                                            mainViewModel.updateTodo(todo.copy(completed = check))
+                                        })
+                                    Divider()
+
                                 }
                             }
 
@@ -107,6 +110,7 @@ class MainActivity : AppCompatActivity() {
     private fun TodoItem(
         modifier: Modifier,
         todo: Todo,
+//        checked: Boolean,
         onClick: (Boolean) -> Unit,
     ) {
         Row(modifier = modifier

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.testing.android.todo.data.localdb.Todo
 import com.testing.android.todo.repo.TodoRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import javax.inject.Inject
@@ -17,8 +18,8 @@ class MainViewModel @Inject constructor(private val todoRepo: TodoRepo) : ViewMo
     private val _todos = MutableLiveData<Resource<List<Todo>>>()
     val todos: LiveData<Resource<List<Todo>>> = _todos
 
-    private val _update = MutableLiveData<Resource<String?>>()
-    val update: LiveData<Resource<String?>> = _update
+     var update = MutableLiveData<Boolean?>()
+//    var update: LiveData<Boolean?> = _update
 
     fun getTodos() {
         viewModelScope.launch {
@@ -35,13 +36,11 @@ class MainViewModel @Inject constructor(private val todoRepo: TodoRepo) : ViewMo
 
     fun updateTodo(todo: Todo) {
         viewModelScope.launch {
-            _update.value = Resource.Loading(null, null)
             try {
                 todoRepo.updateTodo(todo)
-                _update.value = Resource.Success(null, null)
+                update.value = !todo.completed
             } catch (e: Exception) {
                 println("Error $e")
-                _update.value = Resource.Error(null, "Something went wrong")
             }
         }
     }
