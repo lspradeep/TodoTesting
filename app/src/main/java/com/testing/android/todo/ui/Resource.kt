@@ -1,16 +1,6 @@
 package com.testing.android.todo.ui
 
-class Resource<T>() {
-
-    var data: T? = null
-    var message: String? = null
-    var status: Status = Status.LOADING
-
-    constructor(data: T?, message: String?, status: Status) : this() {
-        this.data = data
-        this.message = message
-        this.status = status
-    }
+class Resource<T>(val data: T?, val message: String?, val status: Status) {
 
     companion object {
         fun <T> Loading(data: T?, message: String?, status: Status = Status.LOADING): Resource<T> {
