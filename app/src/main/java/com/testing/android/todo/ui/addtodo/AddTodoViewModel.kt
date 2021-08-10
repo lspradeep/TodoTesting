@@ -10,7 +10,9 @@ import com.testing.android.todo.data.localdb.TodoDao
 import com.testing.android.todo.repo.TodoRepo
 import com.testing.android.todo.ui.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -46,9 +48,11 @@ class AddTodoViewModel @Inject constructor(private val todoRepo: TodoRepo) : Vie
         }
         viewModelScope.launch {
             try {
-                todoRepo.addTodo(Todo(title = title.value ?: "",
-                    content = detail.value ?: "",
-                    completed = false))
+                withContext(Dispatchers.IO) {
+                    todoRepo.addTodo(Todo(title = title.value ?: "",
+                        content = detail.value ?: "",
+                        completed = false))
+                }
                 _addTodoStatus.value = Resource.Success(null, null)
             } catch (e: Exception) {
                 println("Error $e")

@@ -8,7 +8,9 @@ import com.testing.android.todo.data.localdb.Todo
 import com.testing.android.todo.repo.TodoRepo
 import com.testing.android.todo.ui.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -22,7 +24,9 @@ class MainViewModel @Inject constructor(private val todoRepo: TodoRepo) : ViewMo
         viewModelScope.launch {
             _todos.value = Resource.Loading(null, null)
             try {
-                val result = todoRepo.getAllTodos()
+                val result = withContext(Dispatchers.IO) {
+                    todoRepo.getAllTodos()
+                }
                 _todos.value = Resource.Success(result, null)
             } catch (e: Exception) {
                 println("Error $e")
@@ -34,8 +38,10 @@ class MainViewModel @Inject constructor(private val todoRepo: TodoRepo) : ViewMo
     fun updateTodo(todo: Todo) {
         viewModelScope.launch {
             try {
-                todoRepo.updateTodo(todo)
-                val result = todoRepo.getAllTodos()
+                val result = withContext(Dispatchers.IO) {
+                    todoRepo.updateTodo(todo)
+                    todoRepo.getAllTodos()
+                }
                 _todos.value = Resource.Success(result, null)
             } catch (e: Exception) {
                 println("Error $e")
