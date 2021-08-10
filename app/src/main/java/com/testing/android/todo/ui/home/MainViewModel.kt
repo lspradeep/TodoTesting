@@ -1,4 +1,4 @@
-package com.testing.android.todo.ui
+package com.testing.android.todo.ui.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.testing.android.todo.data.localdb.Todo
 import com.testing.android.todo.repo.TodoRepo
+import com.testing.android.todo.ui.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import javax.inject.Inject
