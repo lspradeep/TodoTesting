@@ -48,12 +48,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val todos = mainViewModel.todos.observeAsState()
-            val update = mainViewModel.update.observeAsState()
             val rememberListState = rememberLazyListState()
-            if (update.value != null) {
-                getTodos()
-                mainViewModel.update.value = null
-            }
             val modifier = Modifier
             MaterialTheme {
                 Scaffold(
@@ -75,8 +70,6 @@ class MainActivity : AppCompatActivity() {
                                 items(todos.value?.data.orEmpty()) { todo ->
                                     TodoItem(modifier = modifier,
                                         todo = todo,
-//                                        checked = (mainViewModel.update.tryReceive()
-//                                            .getOrNull() ?: todo.completed),
                                         onClick = { check ->
                                             mainViewModel.updateTodo(todo.copy(completed = check))
                                         })
@@ -110,7 +103,6 @@ class MainActivity : AppCompatActivity() {
     private fun TodoItem(
         modifier: Modifier,
         todo: Todo,
-//        checked: Boolean,
         onClick: (Boolean) -> Unit,
     ) {
         Row(modifier = modifier

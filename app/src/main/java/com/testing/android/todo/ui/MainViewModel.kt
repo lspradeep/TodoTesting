@@ -18,9 +18,6 @@ class MainViewModel @Inject constructor(private val todoRepo: TodoRepo) : ViewMo
     private val _todos = MutableLiveData<Resource<List<Todo>>>()
     val todos: LiveData<Resource<List<Todo>>> = _todos
 
-     var update = MutableLiveData<Boolean?>()
-//    var update: LiveData<Boolean?> = _update
-
     fun getTodos() {
         viewModelScope.launch {
             _todos.value = Resource.Loading(null, null)
@@ -38,9 +35,11 @@ class MainViewModel @Inject constructor(private val todoRepo: TodoRepo) : ViewMo
         viewModelScope.launch {
             try {
                 todoRepo.updateTodo(todo)
-                update.value = !todo.completed
+                val result = todoRepo.getAllTodos()
+                _todos.value = Resource.Success(result, null)
             } catch (e: Exception) {
                 println("Error $e")
+                _todos.value = Resource.Error(null, "Something went wrong")
             }
         }
     }
