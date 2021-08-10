@@ -20,13 +20,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.testing.android.todo.R
 import com.testing.android.todo.data.localdb.Todo
+import com.testing.android.todo.ui.TodoViewModel
 import com.testing.android.todo.ui.addtodo.AddTodoActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private val mainViewModel: MainViewModel by viewModels()
+    private val viewModel: TodoViewModel by viewModels()
 
     override fun onResume() {
         super.onResume()
@@ -34,13 +35,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getTodos() {
-        mainViewModel.getTodos()
+        viewModel.getTodos()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val todos = mainViewModel.todos.observeAsState()
+            val todos = viewModel.todos.observeAsState()
             val rememberListState = rememberLazyListState()
             val modifier = Modifier
             MaterialTheme {
@@ -64,7 +65,7 @@ class MainActivity : AppCompatActivity() {
                                     TodoItem(modifier = modifier,
                                         todo = todo,
                                         onClick = { check ->
-                                            mainViewModel.updateTodo(todo.copy(completed = check))
+                                            viewModel.updateTodo(todo.copy(completed = check))
                                         })
                                     Divider()
 
@@ -102,7 +103,7 @@ class MainActivity : AppCompatActivity() {
             .padding(8.dp)
             .fillMaxWidth()
             .clickable {
-                mainViewModel.updateTodo(todo.copy(completed = !todo.completed))
+                viewModel.updateTodo(todo.copy(completed = !todo.completed))
             },
             verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = modifier.weight(1f)) {

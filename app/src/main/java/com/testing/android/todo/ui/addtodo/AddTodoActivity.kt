@@ -3,6 +3,7 @@ package com.testing.android.todo.ui.addtodo
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -16,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.NavigateBefore
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,19 +25,20 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.testing.android.todo.grey
 import com.testing.android.todo.greyLight
 import com.testing.android.todo.ui.Resource
+import com.testing.android.todo.ui.TodoViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class AddTodoActivity : AppCompatActivity() {
 
+    private val viewModel: TodoViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val addTodoViewModel: AddTodoViewModel = viewModel()
-            val title = addTodoViewModel.title.observeAsState()
-            val detail = addTodoViewModel.detail.observeAsState()
-            val addTodoStatus = addTodoViewModel.addTodoStatus.observeAsState()
+            val title = viewModel.title.observeAsState()
+            val detail = viewModel.detail.observeAsState()
+            val addTodoStatus = viewModel.addTodoStatus.observeAsState()
             if (addTodoStatus.value?.status == Resource.Status.SUCCESS) {
                 finish()
             } else if (addTodoStatus.value?.status == Resource.Status.ERROR) {
@@ -66,7 +67,7 @@ class AddTodoActivity : AppCompatActivity() {
                                 OutlinedTextField(
                                     value = title.value ?: "",
                                     onValueChange = { value ->
-                                        addTodoViewModel.onTitleChange(value)
+                                        viewModel.onTitleChange(value)
                                     },
                                     placeholder = { Text(text = "Todo Title") },
                                     maxLines = 1,
@@ -85,7 +86,7 @@ class AddTodoActivity : AppCompatActivity() {
                                 OutlinedTextField(
                                     value = detail.value ?: "",
                                     onValueChange = { value ->
-                                        addTodoViewModel.onContentChange(value)
+                                        viewModel.onContentChange(value)
                                     },
                                     placeholder = { Text(text = "Todo Detail") },
                                     maxLines = 4,
@@ -103,7 +104,7 @@ class AddTodoActivity : AppCompatActivity() {
                                 Spacer(modifier = modifier.height(16.dp))
 
                                 Button(onClick = {
-                                    addTodoViewModel.addTodo()
+                                    viewModel.addTodo()
                                 }, modifier = modifier.fillMaxWidth()) {
                                     Text(text = "Create Todo")
                                 }

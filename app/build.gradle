@@ -117,6 +117,13 @@ dependencies {
     kaptAndroidTest "com.google.dagger:hilt-android-compiler:$hilt_version"
     // ...with Java.
     androidTestAnnotationProcessor "com.google.dagger:hilt-android-compiler:$hilt_version"
+
+    //For using viewModelScope
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1"
+    //  For runBlockingTest, CoroutineDispatcher etc.
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.1"
+    //For InstantTaskExecutorRule
+    testImplementation "androidx.arch.core:core-testing:2.1.0"
 }
 
 kapt {
