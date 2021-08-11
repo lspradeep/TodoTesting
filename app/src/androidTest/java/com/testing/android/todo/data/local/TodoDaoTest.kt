@@ -47,12 +47,35 @@ class TodoDaoTest {
 
     @ExperimentalCoroutinesApi
     @Test
-    fun insertUser() = runBlockingTest {
+    fun insertTodo() = runBlockingTest {
         val todo = Todo(1, "tile", "asasc", false)
         todoDao.addTodo(todo)
         val allTodos = todoDao.getAllTodos()
         assertThat(allTodos).contains(todo)
         assertThat(allTodos.size).isEqualTo(1)
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun deleteTodo() = runBlockingTest {
+        val todo = Todo(1, "tile", "asasc", false)
+        todoDao.addTodo(todo)
+        todoDao.deleteTodo(todo)
+        val allTodos = todoDao.getAllTodos()
+        assertThat(allTodos).doesNotContain(todo)
+        assertThat(allTodos.size).isEqualTo(0)
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun updateTodo() = runBlockingTest {
+        val todo = Todo(1, "tile", "asasc", false)
+        todoDao.addTodo(todo)
+        todoDao.updateTodo(todo.copy(completed = true))
+        val allTodos = todoDao.getAllTodos()
+        assertThat(allTodos).doesNotContain(todo)
+        assertThat(allTodos.size).isEqualTo(1)
+        assertThat(allTodos[0].completed).isEqualTo(true)
     }
 
 }
